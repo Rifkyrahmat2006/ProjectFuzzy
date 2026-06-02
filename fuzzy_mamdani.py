@@ -45,16 +45,16 @@ def build_fuzzy_system() -> tuple[ctrl.ControlSystem, ctrl.Antecedent, ctrl.Ante
     sleep_quality = ctrl.Consequent(np.arange(1, 10.1, 0.1), "Sleep_Quality")
 
     sleep_duration["pendek"] = fuzz.trapmf(sleep_duration.universe, [4, 4, 6.5, 6.5])
-    sleep_duration["sedang"] = fuzz.trimf(sleep_duration.universe, [5, 6.5, 8])
-    sleep_duration["panjang"] = fuzz.trapmf(sleep_duration.universe, [6.5, 9, 9, 9])
+    sleep_duration["sedang"] = fuzz.trimf(sleep_duration.universe, [4.5, 6.5, 8.5])
+    sleep_duration["panjang"] = fuzz.trapmf(sleep_duration.universe, [6.5, 9, 10, 10])
 
-    activity["rendah"] = fuzz.trapmf(activity.universe, [0, 0, 60, 60])
+    activity["rendah"] = fuzz.trapmf(activity.universe, [0, 0, 60, 70])
     activity["sedang"] = fuzz.trimf(activity.universe, [30, 60, 90])
-    activity["tinggi"] = fuzz.trapmf(activity.universe, [60, 120, 120, 120])
+    activity["tinggi"] = fuzz.trapmf(activity.universe, [60, 120, 130, 130])
 
-    caffeine["rendah"] = fuzz.trapmf(caffeine.universe, [0, 0, 2.5, 2.5])
+    caffeine["rendah"] = fuzz.trapmf(caffeine.universe, [0, 0, 2.5, 3])
     caffeine["sedang"] = fuzz.trimf(caffeine.universe, [1, 2.5, 4])
-    caffeine["tinggi"] = fuzz.trapmf(caffeine.universe, [3, 5, 5, 5])
+    caffeine["tinggi"] = fuzz.trapmf(caffeine.universe, [3, 5, 6, 6])
 
     sleep_quality["buruk"] = fuzz.trapmf(sleep_quality.universe, [1, 1, 5, 5])
     sleep_quality["cukup"] = fuzz.trimf(sleep_quality.universe, [3, 5, 7])
@@ -166,6 +166,10 @@ def _aggregate_output(
         )
         output_membership = sleep_quality.terms[rule["output"]].mf
         aggregated = np.maximum(aggregated, np.fmin(rule_strength, output_membership))
+
+    # Safety check: Jika aggregated semua nol (Empty Membership), berikan nilai default
+    if np.sum(aggregated) == 0:
+        return aggregated, float(np.mean(sleep_quality.universe))
 
     centroid = float(fuzz.defuzz(sleep_quality.universe, aggregated, "centroid"))
     return aggregated, centroid
