@@ -213,7 +213,6 @@ def build_visualization_figure(
     axes[1, 1].plot(sleep_quality.universe, sleep_quality["buruk"].mf, linestyle="--", alpha=0.3, label="buruk")
     axes[1, 1].plot(sleep_quality.universe, sleep_quality["cukup"].mf, linestyle="--", alpha=0.3, label="cukup")
     axes[1, 1].plot(sleep_quality.universe, sleep_quality["baik"].mf, linestyle="--", alpha=0.3, label="baik")
-    axes[1, 1].plot(sleep_quality.universe, sleep_quality["sangat_baik"].mf, linestyle="--", alpha=0.3, label="sangat_baik")
     axes[1, 1].fill_between(sleep_quality.universe, 0, aggregated, color="tab:purple", alpha=0.35, label="hasil agregasi")
     axes[1, 1].axvline(centroid, color="black", linestyle="--", linewidth=2, label=f"centroid {centroid:.2f}")
     axes[1, 1].set_title("Kualitas Tidur")
@@ -232,9 +231,9 @@ def run_cli_demo() -> None:
 
     print("Data setelah normalisasi:")
     print(df_norm.head())
-    print("\n=== 24 Percobaan Prediksi Sleep Quality ===")
+    print("\n=== 27 Percobaan Prediksi Sleep Quality ===")
 
-    for i in range(min(24, len(df))):
+    for i in range(min(27, len(df))):
         sample = df.iloc[i]
         hasil, _ = evaluate_sleep_quality(
             float(sample["Sleep_Duration"]),
@@ -246,12 +245,12 @@ def run_cli_demo() -> None:
             f"Kafein={sample['Caffeine_Intake']} → Prediksi Kualitas Tidur = {hasil:.2f}"
         )
 
-    fig, axes = plt.subplots(6, 4, figsize=(24, 18))
+    fig, axes = plt.subplots(9, 3, figsize=(18, 27))
     axes = axes.flatten()
 
     sleep_ctrl, _, _, _, sleep_quality = build_fuzzy_system()
 
-    for i in range(min(24, len(df))):
+    for i in range(min(27, len(df))):
         sample = df.iloc[i]
         _, simulation = evaluate_sleep_quality(
             float(sample["Sleep_Duration"]),
