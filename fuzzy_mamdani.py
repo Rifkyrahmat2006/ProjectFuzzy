@@ -44,51 +44,58 @@ def build_fuzzy_system() -> tuple[ctrl.ControlSystem, ctrl.Antecedent, ctrl.Ante
     caffeine = ctrl.Antecedent(np.arange(0, 5.1, 0.1), "Caffeine_Intake")
     sleep_quality = ctrl.Consequent(np.arange(1, 10.1, 0.1), "Sleep_Quality")
 
-    sleep_duration["pendek"] = fuzz.trapmf(sleep_duration.universe, [4, 4, 6.5, 6.5])
-    sleep_duration["sedang"] = fuzz.trimf(sleep_duration.universe, [4.5, 6.5, 8.5])
-    sleep_duration["panjang"] = fuzz.trapmf(sleep_duration.universe, [6.5, 9, 10, 10])
+    sleep_duration["pendek"] = fuzz.trapmf(sleep_duration.universe,[4,4,5.5,6.5])
+    sleep_duration["sedang"] = fuzz.trimf(sleep_duration.universe,[5,6.5,8])
+    sleep_duration["panjang"] = fuzz.trapmf(sleep_duration.universe,[6.5,7.5,9,9])
 
-    activity["rendah"] = fuzz.trapmf(activity.universe, [0, 0, 60, 70])
-    activity["sedang"] = fuzz.trimf(activity.universe, [30, 60, 90])
-    activity["tinggi"] = fuzz.trapmf(activity.universe, [60, 120, 130, 130])
+    activity["rendah"] = fuzz.trapmf(activity.universe,[0,0,40,60])
+    activity["sedang"] = fuzz.trimf(activity.universe,[30,60,90])
+    activity["tinggi"] = fuzz.trapmf(activity.universe,[60,80,120,120])
 
-    caffeine["rendah"] = fuzz.trapmf(caffeine.universe, [0, 0, 2.5, 3])
-    caffeine["sedang"] = fuzz.trimf(caffeine.universe, [1, 2.5, 4])
-    caffeine["tinggi"] = fuzz.trapmf(caffeine.universe, [3, 5, 6, 6])
+    caffeine["rendah"] = fuzz.trapmf(caffeine.universe,[0,0,1.5,2.5])
+    caffeine["sedang"] = fuzz.trimf(caffeine.universe,[1,2.5,4])
+    caffeine["tinggi"] = fuzz.trapmf(caffeine.universe,[3,4,5,5])
 
-    sleep_quality["buruk"] = fuzz.trapmf(sleep_quality.universe, [1, 1, 5, 5])
-    sleep_quality["cukup"] = fuzz.trimf(sleep_quality.universe, [3, 5, 7])
-    sleep_quality["baik"] = fuzz.trimf(sleep_quality.universe, [5, 10, 10])
-
+    sleep_quality["buruk"] = fuzz.trapmf(sleep_quality.universe,[1,1,5,5])
+    sleep_quality["cukup"] = fuzz.trimf(sleep_quality.universe,[3,5,7])
+    sleep_quality["baik"] = fuzz.trapmf(sleep_quality.universe,[5,7,10,10])
+    
     rules = [
-        # Mapping R1-R27 berdasarkan Excel (3 Kategori: Buruk, Cukup, Baik)
-        ctrl.Rule(sleep_duration["pendek"] & activity["rendah"] & caffeine["tinggi"], sleep_quality["buruk"]), # R1
-        ctrl.Rule(sleep_duration["pendek"] & activity["rendah"] & caffeine["sedang"], sleep_quality["buruk"]), # R2
-        ctrl.Rule(sleep_duration["pendek"] & activity["rendah"] & caffeine["rendah"], sleep_quality["buruk"]), # R3
-        ctrl.Rule(sleep_duration["pendek"] & activity["sedang"] & caffeine["tinggi"], sleep_quality["buruk"]), # R4
-        ctrl.Rule(sleep_duration["pendek"] & activity["sedang"] & caffeine["sedang"], sleep_quality["cukup"]), # R5
-        ctrl.Rule(sleep_duration["pendek"] & activity["sedang"] & caffeine["rendah"], sleep_quality["buruk"]), # R6
-        ctrl.Rule(sleep_duration["pendek"] & activity["tinggi"] & caffeine["tinggi"], sleep_quality["buruk"]), # R7
-        ctrl.Rule(sleep_duration["pendek"] & activity["tinggi"] & caffeine["sedang"], sleep_quality["cukup"]), # R8
-        ctrl.Rule(sleep_duration["pendek"] & activity["tinggi"] & caffeine["rendah"], sleep_quality["cukup"]), # R9
-        ctrl.Rule(sleep_duration["sedang"] & activity["rendah"] & caffeine["tinggi"], sleep_quality["buruk"]), # R10
-        ctrl.Rule(sleep_duration["sedang"] & activity["rendah"] & caffeine["sedang"], sleep_quality["buruk"]), # R11
-        ctrl.Rule(sleep_duration["sedang"] & activity["rendah"] & caffeine["rendah"], sleep_quality["buruk"]), # R12
-        ctrl.Rule(sleep_duration["sedang"] & activity["sedang"] & caffeine["tinggi"], sleep_quality["cukup"]), # R13
-        ctrl.Rule(sleep_duration["sedang"] & activity["sedang"] & caffeine["sedang"], sleep_quality["baik"]), # R14
-        ctrl.Rule(sleep_duration["sedang"] & activity["sedang"] & caffeine["rendah"], sleep_quality["buruk"]), # R15
-        ctrl.Rule(sleep_duration["sedang"] & activity["tinggi"] & caffeine["tinggi"], sleep_quality["buruk"]), # R16
-        ctrl.Rule(sleep_duration["sedang"] & activity["tinggi"] & caffeine["sedang"], sleep_quality["buruk"]), # R17
-        ctrl.Rule(sleep_duration["sedang"] & activity["tinggi"] & caffeine["rendah"], sleep_quality["baik"]), # R18
-        ctrl.Rule(sleep_duration["panjang"] & activity["rendah"] & caffeine["tinggi"], sleep_quality["buruk"]), # R19
+        ctrl.Rule(sleep_duration["pendek"] & activity["rendah"] & caffeine["tinggi"], sleep_quality["buruk"]),  # R1
+        ctrl.Rule(sleep_duration["pendek"] & activity["rendah"] & caffeine["sedang"], sleep_quality["buruk"]),  # R2
+        ctrl.Rule(sleep_duration["pendek"] & activity["rendah"] & caffeine["rendah"], sleep_quality["cukup"]),  # R3
+
+        ctrl.Rule(sleep_duration["pendek"] & activity["sedang"] & caffeine["tinggi"], sleep_quality["buruk"]),  # R4
+        ctrl.Rule(sleep_duration["pendek"] & activity["sedang"] & caffeine["sedang"], sleep_quality["cukup"]),  # R5
+        ctrl.Rule(sleep_duration["pendek"] & activity["sedang"] & caffeine["rendah"], sleep_quality["cukup"]),  # R6
+
+        ctrl.Rule(sleep_duration["pendek"] & activity["tinggi"] & caffeine["tinggi"], sleep_quality["buruk"]),  # R7
+        ctrl.Rule(sleep_duration["pendek"] & activity["tinggi"] & caffeine["sedang"], sleep_quality["cukup"]),  # R8
+        ctrl.Rule(sleep_duration["pendek"] & activity["tinggi"] & caffeine["rendah"], sleep_quality["cukup"]),  # R9
+
+        ctrl.Rule(sleep_duration["sedang"] & activity["rendah"] & caffeine["tinggi"], sleep_quality["buruk"]),  # R10
+        ctrl.Rule(sleep_duration["sedang"] & activity["rendah"] & caffeine["sedang"], sleep_quality["cukup"]),  # R11
+        ctrl.Rule(sleep_duration["sedang"] & activity["rendah"] & caffeine["rendah"], sleep_quality["cukup"]),  # R12
+
+        ctrl.Rule(sleep_duration["sedang"] & activity["sedang"] & caffeine["tinggi"], sleep_quality["cukup"]),  # R13
+        ctrl.Rule(sleep_duration["sedang"] & activity["sedang"] & caffeine["sedang"], sleep_quality["baik"]),   # R14
+        ctrl.Rule(sleep_duration["sedang"] & activity["sedang"] & caffeine["rendah"], sleep_quality["baik"]),   # R15
+
+        ctrl.Rule(sleep_duration["sedang"] & activity["tinggi"] & caffeine["tinggi"], sleep_quality["cukup"]),  # R16
+        ctrl.Rule(sleep_duration["sedang"] & activity["tinggi"] & caffeine["sedang"], sleep_quality["baik"]),   # R17
+        ctrl.Rule(sleep_duration["sedang"] & activity["tinggi"] & caffeine["rendah"], sleep_quality["baik"]),   # R18
+
+        ctrl.Rule(sleep_duration["panjang"] & activity["rendah"] & caffeine["tinggi"], sleep_quality["cukup"]), # R19
         ctrl.Rule(sleep_duration["panjang"] & activity["rendah"] & caffeine["sedang"], sleep_quality["cukup"]), # R20
-        ctrl.Rule(sleep_duration["panjang"] & activity["rendah"] & caffeine["rendah"], sleep_quality["buruk"]), # R21
-        ctrl.Rule(sleep_duration["panjang"] & activity["sedang"] & caffeine["tinggi"], sleep_quality["buruk"]), # R22
-        ctrl.Rule(sleep_duration["panjang"] & activity["sedang"] & caffeine["sedang"], sleep_quality["baik"]), # R23
-        ctrl.Rule(sleep_duration["panjang"] & activity["sedang"] & caffeine["rendah"], sleep_quality["buruk"]), # R24
-        ctrl.Rule(sleep_duration["panjang"] & activity["tinggi"] & caffeine["tinggi"], sleep_quality["buruk"]), # R25
-        ctrl.Rule(sleep_duration["panjang"] & activity["tinggi"] & caffeine["sedang"], sleep_quality["buruk"]), # R26
-        ctrl.Rule(sleep_duration["panjang"] & activity["tinggi"] & caffeine["rendah"], sleep_quality["baik"]), # R27
+        ctrl.Rule(sleep_duration["panjang"] & activity["rendah"] & caffeine["rendah"], sleep_quality["baik"]),  # R21
+
+        ctrl.Rule(sleep_duration["panjang"] & activity["sedang"] & caffeine["tinggi"], sleep_quality["cukup"]), # R22
+        ctrl.Rule(sleep_duration["panjang"] & activity["sedang"] & caffeine["sedang"], sleep_quality["baik"]),  # R23
+        ctrl.Rule(sleep_duration["panjang"] & activity["sedang"] & caffeine["rendah"], sleep_quality["baik"]),  # R24
+
+        ctrl.Rule(sleep_duration["panjang"] & activity["tinggi"] & caffeine["tinggi"], sleep_quality["cukup"]), # R25
+        ctrl.Rule(sleep_duration["panjang"] & activity["tinggi"] & caffeine["sedang"], sleep_quality["baik"]),  # R26
+        ctrl.Rule(sleep_duration["panjang"] & activity["tinggi"] & caffeine["rendah"], sleep_quality["baik"]),  # R27
     ]
 
     return ctrl.ControlSystem(rules), sleep_duration, activity, caffeine, sleep_quality
@@ -96,35 +103,42 @@ def build_fuzzy_system() -> tuple[ctrl.ControlSystem, ctrl.Antecedent, ctrl.Ante
 
 def get_rule_base() -> list[dict[str, str]]:
     return [
-        {"durasi": "pendek", "aktivitas": "rendah", "kafein": "tinggi", "output": "buruk"}, # R1
-        {"durasi": "pendek", "aktivitas": "rendah", "kafein": "sedang", "output": "buruk"}, # R2
-        {"durasi": "pendek", "aktivitas": "rendah", "kafein": "rendah", "output": "buruk"}, # R3
-        {"durasi": "pendek", "aktivitas": "sedang", "kafein": "tinggi", "output": "buruk"}, # R4
-        {"durasi": "pendek", "aktivitas": "sedang", "kafein": "sedang", "output": "cukup"}, # R5
-        {"durasi": "pendek", "aktivitas": "sedang", "kafein": "rendah", "output": "buruk"}, # R6
-        {"durasi": "pendek", "aktivitas": "tinggi", "kafein": "tinggi", "output": "buruk"}, # R7
-        {"durasi": "pendek", "aktivitas": "tinggi", "kafein": "sedang", "output": "cukup"}, # R8
-        {"durasi": "pendek", "aktivitas": "tinggi", "kafein": "rendah", "output": "cukup"}, # R9
-        {"durasi": "sedang", "aktivitas": "rendah", "kafein": "tinggi", "output": "buruk"}, # R10
-        {"durasi": "sedang", "aktivitas": "rendah", "kafein": "sedang", "output": "buruk"}, # R11
-        {"durasi": "sedang", "aktivitas": "rendah", "kafein": "rendah", "output": "buruk"}, # R12
-        {"durasi": "sedang", "aktivitas": "sedang", "kafein": "tinggi", "output": "cukup"}, # R13
-        {"durasi": "sedang", "aktivitas": "sedang", "kafein": "sedang", "output": "baik"}, # R14
-        {"durasi": "sedang", "aktivitas": "sedang", "kafein": "rendah", "output": "buruk"}, # R15
-        {"durasi": "sedang", "aktivitas": "tinggi", "kafein": "tinggi", "output": "buruk"}, # R16
-        {"durasi": "sedang", "aktivitas": "tinggi", "kafein": "sedang", "output": "buruk"}, # R17
-        {"durasi": "sedang", "aktivitas": "tinggi", "kafein": "rendah", "output": "baik"}, # R18
-        {"durasi": "panjang", "aktivitas": "rendah", "kafein": "tinggi", "output": "buruk"}, # R19
-        {"durasi": "panjang", "aktivitas": "rendah", "kafein": "sedang", "output": "cukup"}, # R20
-        {"durasi": "panjang", "aktivitas": "rendah", "kafein": "rendah", "output": "buruk"}, # R21
-        {"durasi": "panjang", "aktivitas": "sedang", "kafein": "tinggi", "output": "buruk"}, # R22
-        {"durasi": "panjang", "aktivitas": "sedang", "kafein": "sedang", "output": "baik"}, # R23
-        {"durasi": "panjang", "aktivitas": "sedang", "kafein": "rendah", "output": "buruk"}, # R24
-        {"durasi": "panjang", "aktivitas": "tinggi", "kafein": "tinggi", "output": "buruk"}, # R25
-        {"durasi": "panjang", "aktivitas": "tinggi", "kafein": "sedang", "output": "buruk"}, # R26
-        {"durasi": "panjang", "aktivitas": "tinggi", "kafein": "rendah", "output": "baik"}, # R27
-    ]
+        {"durasi": "pendek", "aktivitas": "rendah", "kafein": "tinggi", "output": "buruk"},  # R1
+        {"durasi": "pendek", "aktivitas": "rendah", "kafein": "sedang", "output": "buruk"},  # R2
+        {"durasi": "pendek", "aktivitas": "rendah", "kafein": "rendah", "output": "cukup"},  # R3
 
+        {"durasi": "pendek", "aktivitas": "sedang", "kafein": "tinggi", "output": "buruk"},  # R4
+        {"durasi": "pendek", "aktivitas": "sedang", "kafein": "sedang", "output": "cukup"},  # R5
+        {"durasi": "pendek", "aktivitas": "sedang", "kafein": "rendah", "output": "cukup"},  # R6
+
+        {"durasi": "pendek", "aktivitas": "tinggi", "kafein": "tinggi", "output": "buruk"},  # R7
+        {"durasi": "pendek", "aktivitas": "tinggi", "kafein": "sedang", "output": "cukup"},  # R8
+        {"durasi": "pendek", "aktivitas": "tinggi", "kafein": "rendah", "output": "cukup"},  # R9
+
+        {"durasi": "sedang", "aktivitas": "rendah", "kafein": "tinggi", "output": "buruk"},  # R10
+        {"durasi": "sedang", "aktivitas": "rendah", "kafein": "sedang", "output": "cukup"},  # R11
+        {"durasi": "sedang", "aktivitas": "rendah", "kafein": "rendah", "output": "cukup"},  # R12
+
+        {"durasi": "sedang", "aktivitas": "sedang", "kafein": "tinggi", "output": "cukup"},  # R13
+        {"durasi": "sedang", "aktivitas": "sedang", "kafein": "sedang", "output": "baik"},   # R14
+        {"durasi": "sedang", "aktivitas": "sedang", "kafein": "rendah", "output": "baik"},   # R15
+
+        {"durasi": "sedang", "aktivitas": "tinggi", "kafein": "tinggi", "output": "cukup"},  # R16
+        {"durasi": "sedang", "aktivitas": "tinggi", "kafein": "sedang", "output": "baik"},   # R17
+        {"durasi": "sedang", "aktivitas": "tinggi", "kafein": "rendah", "output": "baik"},   # R18
+
+        {"durasi": "panjang", "aktivitas": "rendah", "kafein": "tinggi", "output": "cukup"}, # R19
+        {"durasi": "panjang", "aktivitas": "rendah", "kafein": "sedang", "output": "cukup"}, # R20
+        {"durasi": "panjang", "aktivitas": "rendah", "kafein": "rendah", "output": "baik"},  # R21
+
+        {"durasi": "panjang", "aktivitas": "sedang", "kafein": "tinggi", "output": "cukup"}, # R22
+        {"durasi": "panjang", "aktivitas": "sedang", "kafein": "sedang", "output": "baik"},  # R23
+        {"durasi": "panjang", "aktivitas": "sedang", "kafein": "rendah", "output": "baik"},  # R24
+
+        {"durasi": "panjang", "aktivitas": "tinggi", "kafein": "tinggi", "output": "cukup"}, # R25
+        {"durasi": "panjang", "aktivitas": "tinggi", "kafein": "sedang", "output": "baik"},  # R26
+        {"durasi": "panjang", "aktivitas": "tinggi", "kafein": "rendah", "output": "baik"},  # R27
+    ]
 
 def _antecedent_memberships(variable: ctrl.Antecedent, crisp_value: float) -> dict[str, float]:
     return {
